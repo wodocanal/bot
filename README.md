@@ -1,2 +1,1 @@
-# bot
-i will make readme later
+# i will made readme later
