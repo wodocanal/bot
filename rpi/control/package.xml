@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
     <package format="2">
-    <name>acontrol</name>
+    <name>control</name>
     <version>0.0.1</version>
-    <description>robot_control_package</description>
+    <description>robot control package</description>
 
     <maintainer email="moswodocanal@gmail.com">wodo</maintainer>
     <license>TODO</license>

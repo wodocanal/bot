@@ -1,1 +1,3 @@
-# i will made readme later
+# this is my project
+autonomic robot that using ros
+:/
