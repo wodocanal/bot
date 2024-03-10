@@ -1,0 +1,9 @@
+<launch>
+	<arg name="model" default="$(find description)/urdf/base.xacro" />
+	<param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+	
+	<arg name="rvizconfig" default="$(find description)/rviz/display_slam.rviz" />
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="false" output="screen"/>
+	
+	<include file="$(find slam)/launch/slam.launch" />
+</launch>
