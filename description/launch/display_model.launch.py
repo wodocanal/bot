@@ -12,39 +12,26 @@ def generate_launch_description():
     pkg_path = get_package_share_directory('description')
     urdf_path = os.path.join(pkg_path, 'urdf', 'robot.urdf')
 
-    odom_node = Node(
-            package='odometry',
-            executable='odom_node',
-            name='odom_node',
-            output='screen'
-        )
-    
-    robot_state_publisher = Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[{'robot_description': open(urdf_path).read()}]
-        )
-    
-    joint_publisher = Node(
-            package='joint_state_publisher',
-            executable='joint_state_publisher',
-            name='joint_state_publisher',
-            output='screen'
-        )
-    
     rviz = Node(
             package='rviz2',
             executable='rviz2',
-            name='rviz2',
+            name='pc_rviz',
             output='screen',
-            arguments=['-d', os.path.join(pkg_path, 'rviz', 'display_config_2.rviz')]
-        )
+            arguments=['-d', os.path.join(pkg_path, 'rviz', 'display_config.rviz')])
+    
+    robot_pub = Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_pub',
+            output='screen',
+            parameters=[{'robot_description': open(urdf_path).read()}])
+    
+    joint_pub = Node(
+            package='joint_state_publisher',
+            executable='joint_state_publisher',
+            name='joint_pub',
+            output='screen')
 
     return LaunchDescription([
-        odom_node,
-        robot_state_publisher,
-        joint_publisher,
-        rviz
+        rviz, robot_pub, joint_pub
     ])

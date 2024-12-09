@@ -23,8 +23,7 @@ setup(
     license='no license',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [
-        ],
+        'console_scripts': []
     },
 )
 

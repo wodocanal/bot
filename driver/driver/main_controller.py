@@ -8,7 +8,7 @@ def constrain(val, min_val, max_val):
 
 class DifferentialDriveController(Node):
     def __init__(self):
-        super().__init__('diff_drive_controller')
+        super().__init__('cmd_vel_encryptor')
         
         self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
         self.left_target_speed = self.create_publisher(Float32, '/wheels/left/pwm', 10) 

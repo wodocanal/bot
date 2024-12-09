@@ -4,6 +4,7 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import Int32, Float32
 from geometry_msgs.msg import Quaternion, TransformStamped
 import math
+from math import pi
 from tf2_ros import TransformBroadcaster
 
 class EncoderOdometryNode(Node):
@@ -48,15 +49,14 @@ class EncoderOdometryNode(Node):
         right_distance = self.encoder_angle_to_distance(self.right_encoder_angle)
 
         # Рассчитываем перемещение робота
-        delta_s = (right_distance + left_distance) / 2.0
-        delta_theta = (right_distance - left_distance) / self.wheel_base
+        delta_s = (right_distance + left_distance) / (pi * 2)
+        delta_theta = (right_distance - left_distance) / self.wheel_base / pi
 
         # Обновляем положение и ориентацию робота
         self.x += delta_s * math.cos(self.theta)
         self.y += delta_s * math.sin(self.theta)
         self.theta += delta_theta
 
-        # Публикуем одометрию
         self.publish_odometry()
 
     def encoder_angle_to_distance(self, angle):
@@ -88,7 +88,7 @@ class EncoderOdometryNode(Node):
         odom_msg.pose.pose.orientation = Quaternion(x=odom_quat[0], y=odom_quat[1], z=odom_quat[2], w=odom_quat[3])
 
         # Линейная и угловая скорость
-        odom_msg.child_frame_id = 'base_link'
+        odom_msg.child_frame_id = 'base_footprint'
         odom_msg.twist.twist.linear.x = 0.0
         odom_msg.twist.twist.linear.y = 0.0
         odom_msg.twist.twist.angular.z = 0.0
@@ -100,24 +100,19 @@ class EncoderOdometryNode(Node):
         t = TransformStamped()
         t.header.stamp = current_time
         t.header.frame_id = 'odom'
-        t.child_frame_id = 'base_link'
+        t.child_frame_id = 'base_footprint'
         t.transform.translation.x = self.x
         t.transform.translation.y = self.y
         t.transform.translation.z = 0.0
         t.transform.rotation = odom_msg.pose.pose.orientation
 
-        # Отправляем трансформацию
         self.tf_broadcaster.sendTransform(t)
 
 def main(args=None):
     rclpy.init(args=args)
     node = EncoderOdometryNode()
-
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-
+    
+    rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
 

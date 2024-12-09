@@ -83,16 +83,12 @@ class Encoder:
         GPIO.cleanup(self.pin)
 
 
-left_encoder = Encoder(pin=24, inverted = False)
-right_encoder = Encoder(pin=4, inverted = False)
-
-
 class EncoderNode(Node):
     def __init__(self):
         super().__init__('encoders')
 
-        self.left_encoder = left_encoder
-        self.right_encoder = right_encoder
+        self.left_encoder = Encoder(pin=24, inverted = False)
+        self.right_encoder = Encoder(pin=4, inverted = False)
         
         self.left_angle = self.create_publisher(Float32, '/wheels/left/angle', 10)
         self.right_angle = self.create_publisher(Float32, '/wheels/right/angle', 10)

@@ -78,7 +78,7 @@ class Motor:
 
 class diff_drive_controller_node(Node):
     def __init__(self):
-        super().__init__('motor_controller')
+        super().__init__('motors')
 
         self.wheel_separation = 0.34
         self.wheel_radius = 0.08
