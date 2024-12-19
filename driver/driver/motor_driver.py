@@ -43,7 +43,7 @@ class Motor:
 
     def set_speed(self, speed):
         speed = constrain(speed, 0, 100)
-        speed = speed/2
+        speed = speed//2
         self.pwm.ChangeDutyCycle(speed)
 
     def stop(self, state):
@@ -121,4 +121,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-

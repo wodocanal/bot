@@ -9,16 +9,36 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
-    pkg_path = get_package_share_directory('description')
+    pkg_description = get_package_share_directory('description')
+    urdf_path = os.path.join(pkg_description, 'urdf', 'robot.urdf')
 
     rviz = Node(
             package='rviz2',
             executable='rviz2',
-            name='pc_rviz',
+            name='rviz',
             output='screen',
-            arguments=['-d', os.path.join(pkg_path, 'rviz', 'display_odom.rviz')]
+            arguments=['-d', os.path.join(pkg_description, 'rviz', 'display_odom.rviz')]
         )
     
+    robot_pub = Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_pub',
+            output='screen',
+            parameters=[{'robot_description': open(urdf_path).read()}])
+    
+    joint_pub = Node(
+            package='joint_state_publisher',
+            executable='joint_state_publisher',
+            name='joint_pub',
+            output='screen')
+
+    odom = Node(
+            package='odometry',
+            executable='odom_node',
+            name='odom',
+            output='screen')    # одометрия на основе энкодеров
+    
     return LaunchDescription([
-        rviz
+        rviz, robot_pub, joint_pub, odom
     ])

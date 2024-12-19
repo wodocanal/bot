@@ -10,11 +10,12 @@ from math import pi
 GPIO.setwarnings(False)
 
 class Encoder:
-    def __init__(self, pin, inverted=False):
+    def __init__(self, pin, inverted=False, tick_resolution = 95, speed_koef = 1):
         self.pin = pin
         self.inverted = inverted
-        self.ticks_per_round = 80
+        self.ticks_per_round = tick_resolution
         self.update_rate = 0.1
+        self.speed_koef = speed_koef
         
         self.direction = 1
 
@@ -56,27 +57,25 @@ class Encoder:
         self._previous_encoder = self._current_encoder
 
     def calc_angle(self): # вывод угла на основе текущего значения тиков
-        angle = self.ticks / self.ticks_per_round  # calculating ticks
-        angle = angle * 2 * pi  # to radians
-
+        angle = self.ticks / self.ticks_per_round * (2 * pi) # calculating angle by ticks
         self.delta = angle - self.prev_angle
         self.prev_angle = self.angle
         self.angle = angle
 
     def calc_speed(self):       # TODO calculating current_speed
-        current_time = time()
-        time_delta = current_time - self.prev_time
-        self.prev_time = time()
-
-        ticks_delta = self.ticks - self.prev_ticks
+        time_delta = (time() - self.prev_time)
+        
+        angle_delta = self.delta
         self.prev_ticks = self.ticks
         
-        if ticks_delta > 0:
-            speed = ticks_delta / time_delta / 100 #TODO исправь вычисления
+        if abs(angle_delta) > 0:
+            speed = angle_delta / time_delta #TODO исправь вычисления
         else:
             speed = 0.0
 
-        self.speed = speed
+        self.prev_time = time()
+        self.speed = speed * self.speed_koef
+
 
 
     def cleanup(self):  #выполняется при выключении
@@ -87,8 +86,8 @@ class EncoderNode(Node):
     def __init__(self):
         super().__init__('encoders')
 
-        self.left_encoder = Encoder(pin=24, inverted = False)
-        self.right_encoder = Encoder(pin=4, inverted = False)
+        self.left_encoder = Encoder(pin=4, inverted = False, tick_resolution=95, speed_koef = 0.5)
+        self.right_encoder = Encoder(pin=24, inverted = False, tick_resolution=95, speed_koef = 1)
         
         self.left_angle = self.create_publisher(Float32, '/wheels/left/angle', 10)
         self.right_angle = self.create_publisher(Float32, '/wheels/right/angle', 10)

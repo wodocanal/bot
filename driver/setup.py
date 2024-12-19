@@ -10,6 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', ['launch/driver.launch.py']),
+        ('share/' + package_name + '/launch', ['launch/motors.launch.py']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -20,9 +21,14 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-		    'motor_controller_node = driver.motor_controller:main',
-            'encoder_node = driver.encoders:main',
-            'diff_drive_controller_node = driver.main_controller:main',
+		    'new_motors = driver.new_motor_encoder_driver:main',
+
+            'encoders = driver.encoders:main',
+            'motors = driver.motor_driver:main',
+            'regulator = driver.regulator:main',
+
+            'cmd_vel_maker = driver.cmd_vel_teleop:main',
+            'cmd_vel_encoder = driver.cmd_vel_encryptor:main',
         ],
     },
 )

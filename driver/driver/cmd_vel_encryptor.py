@@ -11,8 +11,8 @@ class DifferentialDriveController(Node):
         super().__init__('cmd_vel_encryptor')
         
         self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
-        self.left_target_speed = self.create_publisher(Float32, '/wheels/left/pwm', 10) 
-        self.right_target_speed = self.create_publisher(Float32, '/wheels/right/pwm', 10)
+        self.left_target_speed = self.create_publisher(Float32, '/wheels/left/target_speed', 10) 
+        self.right_target_speed = self.create_publisher(Float32, '/wheels/right/target_speed', 10)
         
     def cmd_vel_callback(self, msg):
         linear = msg.linear.x
@@ -22,10 +22,10 @@ class DifferentialDriveController(Node):
         right_speed = linear + angular
 
         left_pub = Float32()
-        left_pub.data = float(constrain(left_speed, -1, 1))
+        left_pub.data = float(constrain(left_speed * 20, -20, 20))
 
         right_pub = Float32()
-        right_pub.data = float(constrain(right_speed, -1, 1))
+        right_pub.data = float(constrain(right_speed * 20, -20, 20))
     
         self.left_target_speed.publish(left_pub)
         self.right_target_speed.publish(right_pub)

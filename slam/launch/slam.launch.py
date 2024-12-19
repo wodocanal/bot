@@ -15,6 +15,7 @@ from lifecycle_msgs.msg import Transition
 
 def generate_launch_description():
     config_path = os.path.join(get_package_share_directory('slam'), 'config', 'slam_toolbox_params.yaml')
+    # config_path = '/home/wodo/workspace/src/slam/config/slam_toolbox_params.yaml'
 
     autostart = LaunchConfiguration('autostart')
     use_lifecycle_manager = LaunchConfiguration("use_lifecycle_manager")
@@ -30,7 +31,7 @@ def generate_launch_description():
         parameters=[slam_params_file, {'use_lifecycle_manager': use_lifecycle_manager, 'use_sim_time': use_sim_time}],
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
-        name='pc_slam',
+        name='slam',
         output='screen',
         namespace=''
     )

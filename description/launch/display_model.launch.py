@@ -15,7 +15,7 @@ def generate_launch_description():
     rviz = Node(
             package='rviz2',
             executable='rviz2',
-            name='pc_rviz',
+            name='rviz',
             output='screen',
             arguments=['-d', os.path.join(pkg_path, 'rviz', 'display_config.rviz')])
     

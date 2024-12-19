@@ -9,7 +9,7 @@ from tf2_ros import TransformBroadcaster
 
 class EncoderOdometryNode(Node):
     def __init__(self):
-        super().__init__('encoder_odometry_node')
+        super().__init__('odom_node')
 
         # Публикация одометрии
         self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
@@ -29,7 +29,7 @@ class EncoderOdometryNode(Node):
         # Параметры робота
         self.wheel_base = 0.34  # расстояние между колесами (м)
         self.wheel_radius = 0.08  # радиус колеса (м)
-        self.encoder_ticks_per_rev = 162 # количество тиков энкодера на один оборот
+        self.encoder_ticks_per_rev = 100 # количество тиков энкодера на один оборот
 
         # Дельты энкодеров
         self.left_encoder_angle = 0
@@ -49,8 +49,8 @@ class EncoderOdometryNode(Node):
         right_distance = self.encoder_angle_to_distance(self.right_encoder_angle)
 
         # Рассчитываем перемещение робота
-        delta_s = (right_distance + left_distance) / (pi * 2)
-        delta_theta = (right_distance - left_distance) / self.wheel_base / pi
+        delta_s = (right_distance + left_distance) / 2
+        delta_theta = (right_distance - left_distance) / self.wheel_base / pi * 1.95
 
         # Обновляем положение и ориентацию робота
         self.x += delta_s * math.cos(self.theta)
@@ -60,7 +60,7 @@ class EncoderOdometryNode(Node):
         self.publish_odometry()
 
     def encoder_angle_to_distance(self, angle):
-        return angle * self.wheel_radius / 2 / math.pi
+        return angle * self.wheel_radius / self.encoder_ticks_per_rev * 2 * pi
 
     def euler_to_quaternion(self, roll, pitch, yaw):
         qx = math.sin(roll / 2) * math.cos(pitch / 2) * math.cos(yaw / 2) - math.cos(roll / 2) * math.sin(pitch / 2) * math.sin(yaw / 2)

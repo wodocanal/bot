@@ -20,8 +20,6 @@ setup(
     license='no license',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [
-            'slam_node = slam.slam:main',
-        ],
+        'console_scripts': [],
     },
 )
