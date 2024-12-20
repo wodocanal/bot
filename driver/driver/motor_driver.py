@@ -24,7 +24,7 @@ class Motor:
         self.stop_pin = stop_pin
         self.reverse = reverse
 
-        self.min_speed_pwm = 5
+        self.min_speed_pwm = 0
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.direction_pin, OUTPUT)

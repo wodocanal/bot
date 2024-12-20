@@ -93,7 +93,7 @@ class Motor_Encoder:
         self.pid = PID(0.4, 0, 0, max_val=100)
 
     def _set_dir_pwm(self, speed):
-        if abs(speed) < self.min_pwm:
+        if abs(speed) == 0:
             GPIO.output(self.pin_stop, GPIO.HIGH)
             self.pwm.ChangeDutyCycle(0)
         else:
@@ -105,9 +105,9 @@ class Motor_Encoder:
 
             GPIO.output(self.pin_dir, GPIO.HIGH if dir else GPIO.LOW)
 
-            speed = constrain(abs(speed), self.min_pwm, MAX_PWM + 200)
-            speed = speed / 4
-            speed = constrain(speed, 20, 100)
+            speed = constrain(abs(speed), 10, MAX_PWM)
+            # speed = speed / 4
+            # speed = constrain(speed, 20, 100)
             self.pwm.ChangeDutyCycle(speed)
 
     def set(self, speed):
@@ -138,7 +138,7 @@ class Motor_Encoder:
         self.delta = self.angle - self.prev_angle
         self.prev_angle = self.angle
 
-        self.current_speed = constrain(self.delta / time_delta / 3 * 2, -100, 100)
+        self.current_speed = self.delta / time_delta
     
 
 class diff_drive_controller_node(Node):
